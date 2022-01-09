@@ -82,7 +82,7 @@ while itr<=maxitr
 %     if ismember(curtime, target_time)
 %         curind = curind + 1;
 %         cursite = ['rectangle_wetting_data_128_ind_',num2str(curind),'.mat'];
-%         save(cursite,'geom','para','sln','hstry');
+%         save(cursite,'geom','para','sln');
 %     end    
 
     % update fluid-fluid interface
