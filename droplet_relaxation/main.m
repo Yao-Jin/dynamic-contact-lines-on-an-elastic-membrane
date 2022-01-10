@@ -10,14 +10,14 @@ para.cb = 1e-1;
 para.dt = 0.02/4^0;
 para.eta1 = 1; para.mu1 = 1; para.gamma3 = 1; % fixed = 1, since dimensionless
 para.Ca = 0.2; para.eta2 = 0.1; para.mu2 = 0.1; para.mu0 = 0.1; para.ls = 0.1;
-% para.gamma1 = 1; para.gamma2 = 0.5; % dewetting
-para.gamma1 = 0.5; para.gamma2 = 1; % wetting
+para.gamma1 = 1; para.gamma2 = 0.5; % dewetting
+% para.gamma1 = 0.5; para.gamma2 = 1; % wetting
 para.thetaY = acos((para.gamma2-para.gamma1)/para.gamma3);
 
 itr = 1; T = 2; maxitr = floor(T/para.dt)+1; curind = 0;
 
-% site = 'rectangle_dewetting_data32_cb1e_3_gamma2_0_5_Ca_0_2.mat';
-site = 'rectangle_wetting_data32_cb1e_1_gamma1_0_5_Ca_0_2.mat';
+site = 'rectangle_dewetting_data32_cb1e_1_gamma2_0_5_Ca_0_2.mat';
+% site = 'rectangle_wetting_data32_cb1e_1_gamma1_0_5_Ca_0_2.mat';
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ------------------------------------------------------------------------------------
 % record the initial settings
@@ -34,7 +34,7 @@ hstry.cl2mem = zeros(maxitr,2);
 hstry.pmem_track = zeros(maxitr,2*para.Nmem-1,2);
 hstry.pffi_track = zeros(maxitr,2*para.Nffi-1,2);
 hstry.kmem_track = zeros(maxitr,2*para.Nmem-1);
-hstry.bargamma_track = zeros(maxitr,2*para.Nmem+1,1);
+hstry.nu_track = zeros(maxitr,2*para.Nmem+1,1);
 hstry.fluvel_max_norm = zeros(maxitr,1);
 hstry.dynamic_angle_l = zeros(maxitr,1);
 hstry.dynamic_angle_r = zeros(maxitr,1);
@@ -76,7 +76,7 @@ while itr<=maxitr
     
     % step 1: coupled linear system for one time step
     % update membrane
-    [sln, para] = fluid_P2P01_mem_P2P2_bargamma_P2(geom,para,sln);
+    [sln, para] = fluid_P2P01_mem_P2P2_nu_P2(geom,para,sln);
     
 %     curtime = (itr-1)*para.dt; target_time = [0.02 0.04 0.05 0.06 0.1 0.2 0.5 1 2];
 %     if ismember(curtime, target_time)
@@ -86,7 +86,7 @@ while itr<=maxitr
 %     end    
 
     % update fluid-fluid interface
-    [sln, para] = fluid_P2P01_ffi_P2_bargamma_P2(geom,para,sln);
+    [sln, para] = fluid_P2P01_ffi_P2_nu_P2(geom,para,sln);
 
 % ------------------------------------------------------------------------------------
 % record tracks and disp some info
@@ -110,7 +110,7 @@ for tmp = 1:1
     hstry.pmem_track(itr,1:2*para.Nmem-1,1:2) = sln.pmem(1:2*para.Nmem-1,1:2);
     hstry.pffi_track(itr,1:2*para.Nffi-1,1:2) = sln.pffi(1:2*para.Nffi-1,1:2);
     hstry.kmem_track(itr,1:2*para.Nmem-1) = sln.kmem(1:2*para.Nmem-1);
-    hstry.bargamma_track(itr,1:2*para.Nmem+1) = sln.bargamma(1:2*para.Nmem+1);
+    hstry.nu_track(itr,1:2*para.Nmem+1) = sln.nu(1:2*para.Nmem+1);
     hstry.memlen(itr) = para.curlen;
     hstry.droparea(itr) = para.areanow;
     hstry.Nmems(itr) = para.Nmem;
